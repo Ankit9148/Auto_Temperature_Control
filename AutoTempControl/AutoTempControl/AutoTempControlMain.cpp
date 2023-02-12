@@ -1,12 +1,12 @@
 ﻿// AutoTempControl.cpp : Defines the entry point for the application.
 //
 
-#include "AutoTempControl.h"
+#include "AutoTempControlMain.h"
 
 using namespace std;
 
 int main()
 {
-	cout << "Hello CMake." << endl;
+	cout << "Hello AutotempControl." << endl;
 	return 0;
 }
