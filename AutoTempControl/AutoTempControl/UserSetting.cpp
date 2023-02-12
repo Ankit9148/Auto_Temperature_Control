@@ -11,3 +11,4 @@ void UserTemperatureSetting::setCoolerTemperature(int startTemp, int stopTemp)
 	coolerStartTemp  = startTemp;
 	coolerStopTemp = stopTemp;
 }
+
