@@ -1,7 +1,5 @@
-class TempSensor {
+#pragma once
 
-private:
-	int currentSensorTemp = 45;
-public:
-	int getTemperature();
-};
+void initTemperatureSensor();
+int getTemperature();
+void setTemperatureSensor(int value);
