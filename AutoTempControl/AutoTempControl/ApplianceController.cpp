@@ -1,29 +1,37 @@
 #include "ApplianceController.h"
+#include "Application.h"
 #include <iostream>
-int currentApplianceState = 0;
+int applianceRunningState = 0;
 enum MyEnum
 {
-	CONTROLLER_INIT, 
-	CONTROLLER_START,
-	CONTROLLER_RUN
+	CONTROLLER_INIT,
+	CONTROLLER_CONFIGURATION,
+	CONTROLLER_MODULE_INIT,
+	CONTROLLER_NORMAL_OPERATION
 };
 using namespace std;
-void handler_1Sec() {
-	switch (currentApplianceState)
+void handler_1Sec()
+{
+	switch (applianceRunningState)
 	{
 	case CONTROLLER_INIT:
 		// Init Appliance
-		cout << "Appliance State" << currentApplianceState <<endl;
-		currentApplianceState++;
+		cout << "Appliance State" << applianceRunningState << endl;
+		applianceRunningState++;
 		break;
-	case CONTROLLER_START:
-		// Init Appliance
-		cout << "Appliance State" << currentApplianceState << endl;
-		currentApplianceState++;
+	case CONTROLLER_CONFIGURATION:
+		// Configure specific appliance
+		cout << "Appliance State" << applianceRunningState << endl;
+		applianceRunningState++;
 		break;
-	case CONTROLLER_RUN:
+	case CONTROLLER_MODULE_INIT:
+		// Initialize Peripherals
+		cout << "Appliance State" << applianceRunningState << endl;
+		applianceRunningState++;
+		break;
+	case CONTROLLER_NORMAL_OPERATION:
 		// Init Appliance
-		cout << "Appliance State" << currentApplianceState << endl;
+		applicationHandler();
 		break;
 	default:
 		break;
