@@ -1,36 +1,46 @@
 #include "Application.h"
 using namespace std;
 
-int applianceControllerRunningState = 0;
+int applicationRunningState = 0;
+bool isHeaterRunning, isCoolerRunning = false;
 static void initialize_userSetting();
 
 void applicationHandler()
 {
-    switch (applianceControllerRunningState)
+    int roomTemp = getTemperature();
+    switch (applicationRunningState)
     {
     case STATE_INIT:
         // Init Appliance
-        cout << "Appliance State" << applianceControllerRunningState << endl;
-        applianceControllerRunningState++;
+        // cout << "Appliance State" << applianceControllerRunningState << endl;
+        applicationRunningState = STATE_USER_INPUT_START;
         break;
     case STATE_OFF:
     {
         if (getSeason() == SEASON_SUMMER)
         {
-            int roomTemp = getTemperature();
             roomTemp++;
             setTemperatureSensor(roomTemp);
+            if (roomTemp > getCoolerStartTemp())
+            {
+                cout << "Room Temperature Has Gone UP: Staring Cooler....\n";
+                applicationRunningState = STATE_SUMMER_RUN;
+            }
         }
         else if (getSeason() == SEASON_WINTER)
         {
-            int roomTemp = getTemperature();
             roomTemp--;
             setTemperatureSensor(roomTemp);
+            if (roomTemp < getHeaterStartTemp())
+            {
+                cout << "Room Temperature Has Fallen Down: Staring Heater....\n";
+                applicationRunningState = STATE_WINTER_RUN;
+            }
         }
     }
     break;
     case STATE_USER_INPUT_START:
-        applianceControllerRunningState = STATE_USER_INPUT_WAIT;
+        applicationRunningState = STATE_USER_INPUT_WAIT;
         // Configure specific appliance
         initialize_userSetting();
         break;
@@ -38,45 +48,55 @@ void applicationHandler()
         // wiat in this state until user input finishes
         break;
     case STATE_USER_INPUT_END:
+    {
         // Initialize Peripherals
         if (getSeason() == SEASON_SUMMER)
         {
-            applianceControllerRunningState = STATE_SUMMER_RUN;
+            if (roomTemp > getCoolerStartTemp())
+            {
+                cout << "Room Temperature Has Gone UP: Staring Cooler....\n";
+                applicationRunningState = STATE_SUMMER_RUN;
+            }
+            else
+            {
+                cout << "Room temperature is moderate\n";
+                applicationRunningState = STATE_OFF;
+            }
         }
         else if (getSeason() == SEASON_WINTER)
         {
-            applianceControllerRunningState = STATE_WINTER_RUN;
+            if (roomTemp < getHeaterStartTemp())
+            {
+                cout << "Room Temperature Has Fallen Down: Staring Heater....\n";
+                applicationRunningState = STATE_WINTER_RUN;
+            }
+            else
+            {
+                cout << "Room temperature is moderate\n";
+                applicationRunningState = STATE_OFF;
+            }
         }
-        break;
+    }
+    break;
     case STATE_WINTER_RUN:
     {
-        int roomTemp = getTemperature();
-        if (roomTemp < getHeaterStartTemp())
+        roomTemp++;
+        setTemperatureSensor(roomTemp);
+        if (roomTemp >= getHeaterStopTemp())
         {
-            cout << "Start Heater" << endl;
-            roomTemp++;
-            setTemperatureSensor(roomTemp);
-            if (roomTemp >= getHeaterStopTemp())
-            {
-                cout << "Room Temperature Has reached: " << roomTemp << endl;
-                applianceControllerRunningState = STATE_OFF;
-            }
+            cout << "Room Temperature Has reached: " << roomTemp << ". Turning OFF Heater\n";
+            applicationRunningState = STATE_OFF;
         }
     }
     break;
     case STATE_SUMMER_RUN:
     {
-        int roomTemp = getTemperature();
-        if (roomTemp > getCoolerStartTemp())
+        roomTemp--;
+        setTemperatureSensor(roomTemp);
+        if (roomTemp <= getCoolerStopTemp())
         {
-            cout << "Started Cooling" << endl;
-            roomTemp--;
-            setTemperatureSensor(roomTemp);
-            if (roomTemp <= getCoolerStopTemp())
-            {
-                cout << "Room Temperature Has reached: " << roomTemp << endl;
-                applianceControllerRunningState = STATE_OFF;
-            }
+            cout << "Room Temperature Has reached: " << roomTemp << ". Turning OFF Cooler\n";
+            applicationRunningState = STATE_OFF;
         }
     }
     break;
@@ -89,41 +109,42 @@ static void initialize_userSetting()
 {
     int startTemp, stopTemp, roomTemp, seasonSetting;
 
-    cout << "Heater Temperature Setting" << endl;
-    cout << "Set Heater Start Temperature" << endl;
+    /* Heater Parameters Setting*/
+    cout << "Heater Temperature Setting\n"
+         << "1. Set Heater Start Temperature\n";
     cin >> startTemp;
-    cout << "Set Heater Stop Temperature" << endl;
+    cout << "2. Set Heater Stop Temperature\n";
     cin >> stopTemp;
     while (startTemp > stopTemp)
     {
-        cout << "Stop Temperature should be greater than start temperature" << endl;
-        cout << "Set Heater Stop Temperature" << endl;
+        cout << "Stop Temperature should be greater than start temperature\n"
+             << "2. Set Heater Stop Temperature\n";
         cin >> stopTemp;
     }
     setHeaterTemperature(startTemp, stopTemp);
-
-    cout << "Cooler Temperature Setting" << endl;
-    cout << "Set Cooler Start Temperature" << endl;
+    /* Cooler Parameters Setting*/
+    cout << "Cooler Temperature Setting\n"
+         << "3. Set Cooler Start Temperature\n";
     cin >> startTemp;
-    cout << "Set Cooler Stop Temperature" << endl;
+    cout << "4. Set Cooler Stop Temperature\n";
     cin >> stopTemp;
     while (startTemp < stopTemp)
     {
-        cout << "Start temperature should be greater than stop temperature" << endl;
-        cout << "Set Cooler Stop Temperature" << endl;
+        cout << "Start temperature should be greater than stop temperature\n"
+             << "4. Set Cooler Stop Temperature\n";
         cin >> stopTemp;
     }
     setCoolerTemperature(startTemp, stopTemp);
-
-    cout << "Current Temperature Setting" << endl;
-    cout << "What is current room Temperature" << endl;
+    /* Additional Parameters Setting*/
+    cout << "Current Temperature Setting\n"
+            "5. What is current room Temperature\n";
     cin >> roomTemp;
     setTemperatureSensor(roomTemp);
 
-    cout << "In Winter temperature decreases by 1 degree a second, In summer, temperature increases 1 degree a second" << endl;
-    cout << "what is the season? Press 1 for Winter, 2 for Summer" << endl;
+    cout << "In Winter temperature decreases by 1 degree a second, In summer, temperature increases 1 degree a second\n"
+         << "6. what is the season? Press 1 for Winter, 0 for Summer\n";
     cin >> seasonSetting;
     setSeason(seasonSetting);
 
-    applianceControllerRunningState = STATE_USER_INPUT_END;
+    applicationRunningState = STATE_USER_INPUT_END;
 }
