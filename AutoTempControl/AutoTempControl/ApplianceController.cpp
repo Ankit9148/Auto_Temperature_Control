@@ -16,17 +16,14 @@ void handler_1Sec()
 	{
 	case CONTROLLER_INIT:
 		// Init Appliance
-		cout << "Appliance State" << applianceRunningState << endl;
-		applianceRunningState++;
+		applianceRunningState = CONTROLLER_NORMAL_OPERATION;
 		break;
 	case CONTROLLER_CONFIGURATION:
 		// Configure specific appliance
-		cout << "Appliance State" << applianceRunningState << endl;
 		applianceRunningState++;
 		break;
 	case CONTROLLER_MODULE_INIT:
 		// Initialize Peripherals
-		cout << "Appliance State" << applianceRunningState << endl;
 		applianceRunningState++;
 		break;
 	case CONTROLLER_NORMAL_OPERATION:

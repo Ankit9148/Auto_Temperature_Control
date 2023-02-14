@@ -17,9 +17,9 @@ void setCoolerTemperature(int startTemp, int stopTemp)
 	coolerStopTemp = stopTemp;
 }
 
-void setSeason(int seasonSetting)
+void setSeason(int season)
 {
-	seasonSetting = seasonSetting;
+	seasonSetting = season;
 }
 
 int getSeason()
