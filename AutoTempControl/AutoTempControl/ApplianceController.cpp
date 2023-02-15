@@ -1,5 +1,5 @@
 #include "ApplianceController.h"
-#include "Application.h"
+#include "Runner.h"
 #include <iostream>
 int applianceRunningState = 0;
 enum MyEnum
@@ -28,7 +28,7 @@ void handler_1Sec()
 		break;
 	case CONTROLLER_NORMAL_OPERATION:
 		// Init Appliance
-		applicationHandler();
+		runHandler();
 		break;
 	default:
 		break;
