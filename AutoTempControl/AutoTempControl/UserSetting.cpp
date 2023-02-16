@@ -4,6 +4,7 @@ int heaterStopTemp = 0;
 int coolerStartTemp = 0;
 int coolerStopTemp = 0;
 int seasonSetting = 0;
+bool mainControllerState = false;
 
 void setHeaterTemperature(int startTemp, int stopTemp)
 {
@@ -43,4 +44,19 @@ int getCoolerStartTemp()
 int getCoolerStopTemp()
 {
 	return coolerStopTemp;
+}
+
+void blockMainController()
+{
+	mainControllerState = true;
+}
+
+void unblockMainController()
+{
+	mainControllerState = false;
+}
+
+bool isMainControllerBlocked()
+{
+	return mainControllerState;
 }

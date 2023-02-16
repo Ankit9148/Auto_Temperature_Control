@@ -8,3 +8,6 @@ int getHeaterStartTemp();
 int getHeaterStopTemp();
 int getCoolerStartTemp();
 int getCoolerStopTemp();
+void blockMainController();
+void unblockMainController();
+bool isMainControllerBlocked();
