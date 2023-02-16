@@ -1,5 +1,5 @@
 #include "TempSensor.h"
-int currentSensorTemp;
+int currentSensorTemp = 25;
 /*
  *Initialize temperature sensor
  */
