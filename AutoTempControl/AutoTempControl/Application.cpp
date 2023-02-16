@@ -3,11 +3,19 @@ using namespace std;
 
 static void initialize_userSetting();
 
-void userOption() {
+void userOption()
+{
     int userInput;
-    cout << "Press 1: Config, 2: Exit\n";
-    cin >> userInput;
-    switch (userInput) {
+    cout << "Press Anytime 1: to Config, 2: to Exit\n";
+    while (!(cin >> userInput))
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid input\n"
+             << "Press Anytime 1: to Config, 2: to Exit\n";
+    }
+    switch (userInput)
+    {
     case 1:
         initialize_userSetting();
         break;
@@ -16,50 +24,78 @@ void userOption() {
         break;
     default:
         cout << "Invalid Input\n";
+        break;
     }
 }
 
 static void initialize_userSetting()
 {
-    int startTemp, stopTemp, roomTemp, seasonSetting;
+    blockMainController();
+    int heaterStartTemp, heaterStopTemp, coolerStartTemp, coolerStopTemp, seasonSetting;
 
     /* Heater Parameters Setting*/
     cout << "Heater Temperature Setting\n"
          << "1. Set Heater Start Temperature\n";
-    cin >> startTemp;
-    cout << "2. Set Heater Stop Temperature\n";
-    cin >> stopTemp;
-    while (startTemp > stopTemp)
+    cin >> heaterStartTemp;
+    while (!cin.good() || !(( - 10 <= heaterStartTemp) && (heaterStartTemp <= 100)))
     {
-        cout << "Stop Temperature should be greater than start temperature\n"
-             << "2. Set Heater Stop Temperature\n";
-        cin >> stopTemp;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid input. Temperature should be i)integer, ii)in the range of [-10 to 100]\n"
+             << "1. Set Heater Start Temperature\n";
+        cin >> heaterStartTemp;
     }
-    setHeaterTemperature(startTemp, stopTemp);
+    cout << "2. Set Heater Stop Temperature\n";
+    cin >> heaterStopTemp;
+    while (!cin.good() || !((-10 <= heaterStopTemp) && (heaterStopTemp <= 100)) || (heaterStartTemp > heaterStopTemp))
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid input. Temperature should be i)integer, ii)in the range of [-10 to 100], iii)greater than heater start temperature \n"
+             << "2. Set Heater Stop Temperature\n";
+        cin >> heaterStopTemp;
+    }
+
     /* Cooler Parameters Setting*/
     cout << "Cooler Temperature Setting\n"
          << "3. Set Cooler Start Temperature\n";
-    cin >> startTemp;
-    cout << "4. Set Cooler Stop Temperature\n";
-    cin >> stopTemp;
-    while (startTemp < stopTemp)
+    cin >> coolerStartTemp;
+    while (!cin.good() || !((-10 <= coolerStartTemp) && (coolerStartTemp <= 100)))
     {
-        cout << "Start temperature should be greater than stop temperature\n"
-             << "4. Set Cooler Stop Temperature\n";
-        cin >> stopTemp;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid input. Temperature should be i)integer, ii)in the range of [-10 to 100]\n"
+             << "3. Set Cooler Start Temperature\n";
+        cin >> coolerStartTemp;
     }
-    setCoolerTemperature(startTemp, stopTemp);
+
+    cout << "4. Set Cooler Stop Temperature\n";
+    cin >> coolerStopTemp;
+    while (!cin.good() || !((-10 <= coolerStopTemp) && (coolerStopTemp <= 100)) || (coolerStartTemp < coolerStopTemp))
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid input. Temperature Temperature should be i)integer, ii)in the range of [-10 to 100], iii)lesser than cooler start temperature \n"
+             << "2. Set Cooler Stop Temperature\n";
+        cin >> coolerStopTemp;
+    }
+
     /* Additional Parameters Setting*/
-    cout << "Current Temperature Setting\n"
-            "5. What is current room Temperature\n";
-    cin >> roomTemp;
-    setTemperatureSensor(roomTemp);
-
     cout << "In Winter temperature decreases by 1 degree a second, In summer, temperature increases 1 degree a second\n"
-         << "6. what is the season? Press 1 for Winter, 0 for Summer\n";
+         << "6. what is the season? Press 0 for Summer, 1 for Winter\n";
     cin >> seasonSetting;
-    setSeason(seasonSetting);
+    while (!(cin >> seasonSetting) || !((seasonSetting == 0) || (seasonSetting == 1)))
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid input\n"
+             << "6. Press 0 for Summer, 1 for Winter\n";
+    }
 
+    setHeaterTemperature(heaterStartTemp, heaterStopTemp);
+    setCoolerTemperature(coolerStartTemp, coolerStopTemp);
+    setSeason(seasonSetting);
     setRunnerState(STATE_USER_INPUT_END);
-    //applicationRunningState = STATE_USER_INPUT_END;
+    unblockMainController();
+    // applicationRunningState = STATE_USER_INPUT_END;
 }
