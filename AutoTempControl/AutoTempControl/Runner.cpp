@@ -7,11 +7,13 @@ bool isHeaterRunning, isCoolerRunning = false;
 void runHandler()
 {
     int roomTemp = getTemperature();
+    if (!isMainControllerBlocked()) {
+        cout << "\r" << std::flush << "Current room Temperature " + std::to_string(roomTemp) + " Insert Your Choice: ";
+    }
     switch (applicationRunningState)
     {
     case STATE_INIT:
         // Init Appliance
-        cout << "Appliance State INIT\n";
         applicationRunningState = STATE_USER_INPUT_WAIT;
         break;
     case STATE_OFF:
@@ -22,7 +24,7 @@ void runHandler()
             setTemperatureSensor(roomTemp);
             if (roomTemp > getCoolerStartTemp())
             {
-                cout << "Room Temperature Has Gone UP: Staring Cooler....\n";
+                showUser("\nRoom Temperature Has Gone UP: Staring Cooler....");
                 applicationRunningState = STATE_SUMMER_RUN;
             }
         }
@@ -32,7 +34,7 @@ void runHandler()
             setTemperatureSensor(roomTemp);
             if (roomTemp < getHeaterStartTemp())
             {
-                cout << "Room Temperature Has Fallen Down: Staring Heater....\n";
+                showUser("\nRoom Temperature Has Fallen Down: Staring Heater....");
                 applicationRunningState = STATE_WINTER_RUN;
             }
         }
@@ -48,12 +50,12 @@ void runHandler()
         {
             if (roomTemp > getCoolerStartTemp())
             {
-                cout << "Room Temperature Has Gone UP: Staring Cooler....\n";
+                showUser("\nRoom Temperature Has Gone UP: Staring Cooler....");
                 applicationRunningState = STATE_SUMMER_RUN;
             }
             else
             {
-                cout << "Room temperature is moderate\n";
+                showUser("\nRoom temperature is moderate");
                 applicationRunningState = STATE_OFF;
             }
         }
@@ -61,12 +63,12 @@ void runHandler()
         {
             if (roomTemp < getHeaterStartTemp())
             {
-                cout << "Room Temperature Has Fallen Down: Staring Heater....\n";
+                showUser("\nRoom Temperature Has Fallen Down: Staring Heater....");
                 applicationRunningState = STATE_WINTER_RUN;
             }
             else
             {
-                cout << "Room temperature is moderate\n";
+                showUser("\nRoom temperature is moderate");
                 applicationRunningState = STATE_OFF;
             }
         }
@@ -78,7 +80,7 @@ void runHandler()
         setTemperatureSensor(roomTemp);
         if (roomTemp >= getHeaterStopTemp())
         {
-            cout << "Room Temperature Has reached: " << roomTemp << ". Turning OFF Heater\n";
+            showUser("\nRoom Temperature Has reached: " + std::to_string(roomTemp) + ". Turning OFF Heater");
             applicationRunningState = STATE_OFF;
         }
     }
@@ -89,7 +91,7 @@ void runHandler()
         setTemperatureSensor(roomTemp);
         if (roomTemp <= getCoolerStopTemp())
         {
-            cout << "Room Temperature Has reached: " << roomTemp << ". Turning OFF Cooler\n";
+            showUser("\nRoom Temperature Has reached: " + std::to_string(roomTemp) + ". Turning OFF Cooler");
             applicationRunningState = STATE_OFF;
         }
     }
@@ -99,6 +101,14 @@ void runHandler()
     }
 }
 
-void setRunnerState(int newState) {
+void setRunnerState(int newState)
+{
     applicationRunningState = newState;
+}
+
+void showUser(std::string message)
+{
+    if (!isMainControllerBlocked()) {
+        cout << message << endl;
+    }
 }

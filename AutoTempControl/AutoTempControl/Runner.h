@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <string>
 #include "TempSensor.h"
 #include "UserSetting.h"
 
@@ -22,3 +23,4 @@ enum SeasonType
 
 void runHandler();
 void setRunnerState(int newState);
+void showUser(std::string message);

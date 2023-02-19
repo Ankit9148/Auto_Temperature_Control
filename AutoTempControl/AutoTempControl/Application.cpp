@@ -84,14 +84,14 @@ static void initialize_userSetting()
     cout << "In Winter temperature decreases by 1 degree a second, In summer, temperature increases 1 degree a second\n"
          << "6. what is the season? Press 0 for Summer, 1 for Winter\n";
     cin >> seasonSetting;
-    while (!(cin >> seasonSetting) || !((seasonSetting == 0) || (seasonSetting == 1)))
+    while (!cin.good() || !((seasonSetting == 0) || (seasonSetting == 1)))
     {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Invalid input\n"
              << "6. Press 0 for Summer, 1 for Winter\n";
     }
-
+    system("cls");
     setHeaterTemperature(heaterStartTemp, heaterStopTemp);
     setCoolerTemperature(coolerStartTemp, coolerStopTemp);
     setSeason(seasonSetting);
