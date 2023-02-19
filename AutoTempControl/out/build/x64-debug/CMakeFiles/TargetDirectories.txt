@@ -1,0 +1,5 @@
+C:/Users/ankit/source/repos/Auto_Temperature_Control/AutoTempControl/out/build/x64-debug/CMakeFiles/edit_cache.dir
+C:/Users/ankit/source/repos/Auto_Temperature_Control/AutoTempControl/out/build/x64-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/ankit/source/repos/Auto_Temperature_Control/AutoTempControl/out/build/x64-debug/AutoTempControl/CMakeFiles/AutoTempControl.dir
+C:/Users/ankit/source/repos/Auto_Temperature_Control/AutoTempControl/out/build/x64-debug/AutoTempControl/CMakeFiles/edit_cache.dir
+C:/Users/ankit/source/repos/Auto_Temperature_Control/AutoTempControl/out/build/x64-debug/AutoTempControl/CMakeFiles/rebuild_cache.dir
